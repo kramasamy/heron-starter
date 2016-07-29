@@ -1,10 +1,10 @@
-package storm.starter.bolt;
+package heron.starter.bolt;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import backtype.storm.tuple.Tuple;
-import storm.starter.tools.Rankings;
+import heron.starter.tools.Rankings;
 
 /**
  * This bolt merges incoming {@link Rankings}.

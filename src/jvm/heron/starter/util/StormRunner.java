@@ -1,4 +1,4 @@
-package storm.starter.util;
+package heron.starter.util;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;

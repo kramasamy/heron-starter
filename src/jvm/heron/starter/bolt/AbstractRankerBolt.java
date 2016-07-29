@@ -1,4 +1,4 @@
-package storm.starter.bolt;
+package heron.starter.bolt;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +12,8 @@ import backtype.storm.topology.base.BaseBasicBolt;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
-import storm.starter.tools.Rankings;
-import storm.starter.util.TupleHelpers;
+import heron.starter.tools.Rankings;
+import heron.starter.util.TupleHelpers;
 
 /**
  * This abstract bolt provides the basic behavior of bolts that rank objects according to their count.

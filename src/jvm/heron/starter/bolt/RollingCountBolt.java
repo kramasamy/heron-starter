@@ -1,4 +1,4 @@
-package storm.starter.bolt;
+package heron.starter.bolt;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,9 +15,9 @@ import backtype.storm.topology.base.BaseRichBolt;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
-import storm.starter.tools.NthLastModifiedTimeTracker;
-import storm.starter.tools.SlidingWindowCounter;
-import storm.starter.util.TupleHelpers;
+import heron.starter.tools.NthLastModifiedTimeTracker;
+import heron.starter.tools.SlidingWindowCounter;
+import heron.starter.util.TupleHelpers;
 
 /**
  * This bolt performs rolling counts of incoming objects, i.e. sliding window based counting.

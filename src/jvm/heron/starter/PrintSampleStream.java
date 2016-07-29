@@ -1,14 +1,14 @@
 // to use this example, uncomment the twitter4j dependency information in the project.clj,
 // uncomment storm.starter.spout.TwitterSampleSpout, and uncomment this class
 
-package storm.starter;
+package heron.starter;
 
-import storm.starter.spout.TwitterSampleSpout;
+import heron.starter.spout.TwitterSampleSpout;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.utils.Utils;
-import storm.starter.bolt.PrinterBolt;
+import heron.starter.bolt.PrinterBolt;
 
 
 public class PrintSampleStream {        

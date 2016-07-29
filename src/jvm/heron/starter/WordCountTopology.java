@@ -1,4 +1,4 @@
-package storm.starter;
+package heron.starter;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package storm.starter.spout;
+package heron.starter.spout;
 
 import java.util.Map;
 import java.util.Random;

@@ -1,12 +1,12 @@
-package storm.starter.bolt;
+package heron.starter.bolt;
 
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import backtype.storm.tuple.Tuple;
-import storm.starter.tools.Rankable;
-import storm.starter.tools.RankableObjectWithFields;
+import heron.starter.tools.Rankable;
+import heron.starter.tools.RankableObjectWithFields;
 
 /**
  * This bolt ranks incoming objects by their count.

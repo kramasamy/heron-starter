@@ -1,4 +1,4 @@
-package storm.starter;
+package heron.starter;
 
 import java.util.LinkedList;
 
@@ -9,12 +9,12 @@ import backtype.storm.generated.NotAliveException;
 import backtype.storm.testing.TestWordSpout;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
-import storm.starter.bolt.IntermediateRankingsBolt;
-import storm.starter.bolt.RollingCountBolt;
-import storm.starter.bolt.TotalRankingsBolt;
-import storm.starter.tools.RankableObjectWithFields;
-import storm.starter.tools.Rankings;
-import storm.starter.util.StormRunner;
+import heron.starter.bolt.IntermediateRankingsBolt;
+import heron.starter.bolt.RollingCountBolt;
+import heron.starter.bolt.TotalRankingsBolt;
+import heron.starter.tools.RankableObjectWithFields;
+import heron.starter.tools.Rankings;
+import heron.starter.util.StormRunner;
 
 /**
  * This topology does a continuous computation of the top N words that the topology has seen in terms of cardinality.

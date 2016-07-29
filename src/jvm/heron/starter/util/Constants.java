@@ -1,4 +1,4 @@
-package storm.starter.util;
+package heron.starter.util;
 
 public class Constants {
   public static final String SYSTEM_COMPONENT_ID = "__system";

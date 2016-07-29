@@ -1,8 +1,8 @@
-package storm.starter.tools;
+package heron.starter.tools;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 
-import storm.starter.util.Time;
+import heron.starter.util.Time;
 
 /**
  * This class tracks the time-since-last-modify of a "thing" in a rolling fashion.

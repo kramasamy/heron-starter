@@ -1,4 +1,4 @@
-package storm.starter.bolt;
+package heron.starter.bolt;
 
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;
