@@ -42,11 +42,11 @@ Finally, make sure you have the heron-starter code available on your machine.  G
 
 heron-starter contains a variety of examples of using Heron.  If this is your first time working with Heron, check out these topologies first:
 
-1. [ExclamationTopology](src/jvm/storm/starter/ExclamationTopology.java):  Basic topology written in all Java
-2. [WordCountTopology](src/jvm/storm/starter/WordCountTopology.java):  Basic topology for counting words all written in Java
+1. [ExclamationTopology](src/jvm/heron/starter/ExclamationTopology.java):  Basic topology written in all Java
+2. [WordCountTopology](src/jvm/heron/starter/WordCountTopology.java):  Basic topology for counting words all written in Java
 
 After you have familiarized yourself with these topologies, take a look at the other topopologies in
-[src/jvm/storm/starter/](src/jvm/storm/starter/) such as [RollingTopWords](src/jvm/storm/starter/RollingTopWords.java)
+[src/jvm/heron/starter/](src/jvm/heron/starter/) such as [RollingTopWords](src/jvm/heron/starter/RollingTopWords.java)
 for more advanced implementations.
 
 If you want to learn more about how Heron works, please head over to the
@@ -76,7 +76,7 @@ After compiling your package, you can submit your job locally by following the [
 
     $ heron submit local \
       ./target/heron-starter-{version}-jar-with-dependencies.jar \ # The path of the topology's jar file
-      storm.starter.WordCountTopology \ # The topology's Java class
+      heron.starter.WordCountTopology \ # The topology's Java class
       WordCountTopology \ # The name of the topology
       --deploy-deactivated # Deploy in deactivated mode
 
