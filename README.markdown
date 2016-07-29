@@ -1,4 +1,4 @@
-# Heron Hackathon
+# Heron Starter
 
 Learn to use Heron!
 
@@ -24,7 +24,7 @@ make sure that you have `java` and `git` installed and in your user's `PATH`.
 Second, you will need a Twitter account. If you do not have a Twitter account, please 
 create one. From your Twitter account, you can follow the Heron experts:
 
-    @karthikz, @louis_fumaosong, @billgraham, @sanjeevrk, @staneja, @challenger_nik, @jason_j, @ankitoshniwal
+    @karthikz, @louis_fumaosong, @billgraham
 
 Third, if you need to use Twitter firehose/Tweet stream for your idea, 
 create a set of credentials by following the instructions at 
