@@ -43,6 +43,7 @@ public class RollingTopWords {
   private static Config createTopologyConfiguration() {
     Config conf = new Config();
     conf.setDebug(true);
+    conf.setNumStmgrs(5);
     conf.registerSerialization(Rankings.class);
     conf.registerSerialization(RankableObjectWithFields.class);
     conf.registerSerialization(LinkedList.class);
@@ -62,7 +63,8 @@ public class RollingTopWords {
   }
 
   public void run() throws InterruptedException, InvalidTopologyException, AlreadyAliveException, NotAliveException {
-    StormRunner.runTopologyLocally(builder.createTopology(), topologyName, topologyConfig, runtimeInSeconds);
+    // StormRunner.runTopologyLocally(builder.createTopology(), topologyName, topologyConfig, runtimeInSeconds);
+    StormRunner.runTopologyRemotely(builder.createTopology(), topologyName, topologyConfig);
   }
 
   public static void main(String[] args) throws Exception {

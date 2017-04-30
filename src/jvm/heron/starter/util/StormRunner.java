@@ -2,6 +2,7 @@ package heron.starter.util;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
+import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.generated.NotAliveException;
@@ -21,5 +22,10 @@ public final class StormRunner {
     Thread.sleep((long) runtimeInSeconds * MILLIS_IN_SEC);
     cluster.killTopology(topologyName);
     cluster.shutdown();
+  }
+
+  public static void runTopologyRemotely(StormTopology topology, String topologyName, Config conf)
+      throws InterruptedException, AlreadyAliveException, InvalidTopologyException, NotAliveException {
+    StormSubmitter.submitTopology(topologyName, conf, topology);
   }
 }
