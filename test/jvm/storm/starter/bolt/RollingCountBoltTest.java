@@ -1,4 +1,4 @@
-package storm.starter.bolt;
+package heron.starter.bolt;
 
 import backtype.storm.Config;
 import backtype.storm.task.OutputCollector;
@@ -8,7 +8,7 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import org.testng.annotations.Test;
-import storm.starter.tools.MockTupleHelpers;
+import heron.starter.tools.MockTupleHelpers;
 
 import java.util.Map;
 

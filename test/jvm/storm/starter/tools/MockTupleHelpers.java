@@ -1,6 +1,6 @@
-package storm.starter.tools;
+package heron.starter.tools;
 
-import storm.starter.util.Constants;
+import heron.starter.util.Constants;
 import backtype.storm.tuple.Tuple;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
