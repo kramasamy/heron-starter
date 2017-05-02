@@ -24,6 +24,7 @@ public class ExclamationTopology {
   private static final String MODE_OF_OPERATION_CLUSTER = "Cluster";
   private static final String MODE_OF_OPERATION_LOCAL = "Local";
   private static final int NUMBER_OF_WORKERS = 3;  //default value
+  private static final int DEFAULT_RUNTIME_IN_SECONDS = 60;
 
   public static class ExclamationBolt extends BaseRichBolt {
     OutputCollector _collector;
@@ -79,11 +80,7 @@ public class ExclamationTopology {
             if (args[1].equals(MODE_OF_OPERATION_CLUSTER)) {
                 StormRunner.runTopologyRemotely(builder.createTopology(), topologyName, conf);
             } else {
-                LocalCluster cluster = new LocalCluster();
-                cluster.submitTopology(topologyName, conf, builder.createTopology());
-                Utils.sleep(10000);
-                cluster.killTopology(topologyName);
-                cluster.shutdown();
+                StormRunner.runTopologyLocally(builder.createTopology(), topologyName, conf, DEFAULT_RUNTIME_IN_SECONDS);
             }
         } 
   }
