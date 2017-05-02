@@ -15,11 +15,16 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
+import heron.starter.util.StormRunner;
 
 /**
  * This is a basic example of a Storm topology.
  */
 public class ExclamationTopology {
+  private static final String MODE_OF_OPERATION_CLUSTER = "Cluster";
+  private static final String MODE_OF_OPERATION_LOCAL = "Local";
+  private static final int NUMBER_OF_WORKERS = 3;  //default value
+  private static final int DEFAULT_RUNTIME_IN_SECONDS = 60;
 
   public static class ExclamationBolt extends BaseRichBolt {
     OutputCollector _collector;
@@ -45,28 +50,38 @@ public class ExclamationTopology {
     }
   }
 
-  public static void main(String[] args) throws Exception {
-    TopologyBuilder builder = new TopologyBuilder();
+    public static void main(String[] args) throws Exception {
+        if (args != null) {
+            if (args.length < 2) {
+                Exception exception = new IllegalArgumentException("Illegal number of command line arguments supplied.\nPlease provide the topologyName as the first argument and either 'Cluster' or 'Local' as the second argument.");
+                throw exception;
+            }
 
-    builder.setSpout("word", new TestWordSpout(), 10);
-    builder.setBolt("exclaim1", new ExclamationBolt(), 3).shuffleGrouping("word");
-    builder.setBolt("exclaim2", new ExclamationBolt(), 2).shuffleGrouping("exclaim1");
+            if (!args[1].equals(MODE_OF_OPERATION_CLUSTER) && !args[1].equals(MODE_OF_OPERATION_LOCAL)) {
+                Exception exception = new IllegalArgumentException("The allowed values for the second argument is either 'Cluster' or 'Local'.  Please provide a valid value for the second argument.");
+                throw exception;
+            }
 
-    Config conf = new Config();
-    conf.setDebug(true);
 
-    if (args != null && args.length > 0) {
-      conf.setNumWorkers(3);
+            String topologyName = args[0];
 
-      StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
-    }
-    else {
 
-      LocalCluster cluster = new LocalCluster();
-      cluster.submitTopology("test", conf, builder.createTopology());
-      Utils.sleep(10000);
-      cluster.killTopology("test");
-      cluster.shutdown();
-    }
+            TopologyBuilder builder = new TopologyBuilder();
+
+            builder.setSpout("word", new TestWordSpout(), 10);
+            builder.setBolt("exclaim1", new ExclamationBolt(), 3).shuffleGrouping("word");
+            builder.setBolt("exclaim2", new ExclamationBolt(), 2).shuffleGrouping("exclaim1");
+    
+
+            Config conf = new Config();
+            conf.setDebug(true);
+            conf.setNumWorkers(NUMBER_OF_WORKERS);
+
+            if (args[1].equals(MODE_OF_OPERATION_CLUSTER)) {
+                StormRunner.runTopologyRemotely(builder.createTopology(), topologyName, conf);
+            } else {
+                StormRunner.runTopologyLocally(builder.createTopology(), topologyName, conf, DEFAULT_RUNTIME_IN_SECONDS);
+            }
+        } 
   }
 }
