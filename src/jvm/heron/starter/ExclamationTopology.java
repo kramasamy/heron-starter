@@ -18,7 +18,6 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
-import heron.starter.util.StormRunner;
 
 
 /**
@@ -70,7 +69,7 @@ public class ExclamationTopology {
 
         if (args.length == 2) {
             if (args[1].equals("Cluster")) {
-                StormRunner.runTopologyRemotely(builder.createTopology(), topologyName, conf);
+                StormSubmitter.submitTopology(topologyName, conf, builder.createTopology());
             } else {
                 Exception exception = new IllegalArgumentException("The allowed values for the second argument is either 'Cluster' or 'Local'.  Please provide a valid value for the second argument.");
                 throw exception;
