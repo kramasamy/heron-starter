@@ -27,13 +27,15 @@ public class RollingTopWords {
   private static final int TOP_N = 5;
 
   private final TopologyBuilder builder;
+  private final String mode;
   private final String topologyName;
   private final Config topologyConfig;
   private final int runtimeInSeconds;
 
-  public RollingTopWords() throws InterruptedException {
+  public RollingTopWords(String topologyName, String mode) throws InterruptedException {
     builder = new TopologyBuilder();
-    topologyName = "slidingWindowCounts";
+    this.topologyName = topologyName;
+    this.mode = mode;
     topologyConfig = createTopologyConfiguration();
     runtimeInSeconds = DEFAULT_RUNTIME_IN_SECONDS;
 
@@ -57,17 +59,31 @@ public class RollingTopWords {
     String totalRankerId = "finalRanker";
     builder.setSpout(spoutId, new TestWordSpout(), 5);
     builder.setBolt(counterId, new RollingCountBolt(9, 3), 4).fieldsGrouping(spoutId, new Fields("word"));
-    builder.setBolt(intermediateRankerId, new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping(counterId, new Fields(
-        "obj"));
+    builder.setBolt(intermediateRankerId, new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping(counterId, new Fields("obj"));
     builder.setBolt(totalRankerId, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerId);
   }
 
   public void run() throws InterruptedException, InvalidTopologyException, AlreadyAliveException, NotAliveException {
-    // StormRunner.runTopologyLocally(builder.createTopology(), topologyName, topologyConfig, runtimeInSeconds);
-    StormRunner.runTopologyRemotely(builder.createTopology(), topologyName, topologyConfig);
+    if (mode != null && mode.equals("Cluster")) {
+        StormRunner.runTopologyRemotely(builder.createTopology(), topologyName, topologyConfig);
+    } else {
+        StormRunner.runTopologyLocally(builder.createTopology(), topologyName, topologyConfig, runtimeInSeconds);
+    }
   }
 
   public static void main(String[] args) throws Exception {
-    new RollingTopWords().run();
+    if (args != null) {
+        if (args.length != 2) {
+            Exception exception = new IllegalArgumentException("Illegal number of command line arguments supplied.\nPlease provide the topologyName as the first argument and either 'Cluster' or 'Local' as the second argument.");
+            throw exception;
+        }
+
+        if (args[1].equals("Cluster") || args[1].equals("Local")) {
+            new RollingTopWords(args[0], args[1]).run();
+        } else {
+            Exception exception = new IllegalArgumentException("The allowed values for the second argument is either 'Cluster' or 'Local'.  Please provide a valid value for the second argument.");
+            throw exception;
+        }
+    }
   }
 }
