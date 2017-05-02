@@ -25,6 +25,7 @@ public class RollingTopWords {
 
   private static final int DEFAULT_RUNTIME_IN_SECONDS = 60;
   private static final int TOP_N = 5;
+  private static final int NUMBER_OF_STREAM_MANAGERS = 5;
 
   private final TopologyBuilder builder;
   private final String mode;
@@ -45,7 +46,7 @@ public class RollingTopWords {
   private static Config createTopologyConfiguration() {
     Config conf = new Config();
     conf.setDebug(true);
-    conf.setNumStmgrs(5);
+    conf.setNumStmgrs(NUMBER_OF_STREAM_MANAGERS);
     conf.registerSerialization(Rankings.class);
     conf.registerSerialization(RankableObjectWithFields.class);
     conf.registerSerialization(LinkedList.class);
