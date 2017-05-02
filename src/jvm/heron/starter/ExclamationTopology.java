@@ -5,6 +5,9 @@ import java.util.Map;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
+import backtype.storm.generated.AlreadyAliveException;
+import backtype.storm.generated.InvalidTopologyException;
+import backtype.storm.generated.NotAliveException;
 import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.testing.TestWordSpout;
@@ -15,11 +18,14 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
+import heron.starter.util.StormRunner;
+
 
 /**
  * This is a basic example of a Storm topology.
  */
 public class ExclamationTopology {
+  private static final int NUMBER_OF_WORKERS = 3;  //default value
 
   public static class ExclamationBolt extends BaseRichBolt {
     OutputCollector _collector;
@@ -55,18 +61,36 @@ public class ExclamationTopology {
     Config conf = new Config();
     conf.setDebug(true);
 
-    if (args != null && args.length > 0) {
-      conf.setNumWorkers(3);
+    String topologyName = "SampleTopology1";  //default value
 
-      StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+    if (args != null && args.length > 0) {
+        conf.setNumWorkers(NUMBER_OF_WORKERS);
+
+        topologyName = args[0];
+
+        if (args.length == 2) {
+            if (args[1].equals("Cluster")) {
+                StormRunner.runTopologyRemotely(builder.createTopology(), topologyName, conf);
+            } else {
+                Exception exception = new IllegalArgumentException("The allowed values for the second argument is either 'Cluster' or 'Local'.  Please provide a valid value for the second argument.");
+                throw exception;
+            }
+        } else {
+            submitTopologyToLocalCluster(topologyName, conf, builder);
+        }
     }
     else {
-
-      LocalCluster cluster = new LocalCluster();
-      cluster.submitTopology("test", conf, builder.createTopology());
-      Utils.sleep(10000);
-      cluster.killTopology("test");
-      cluster.shutdown();
+        submitTopologyToLocalCluster(topologyName, conf, builder);
     }
   }
+
+    private static void submitTopologyToLocalCluster(String topologyName, Config conf, TopologyBuilder builder) throws AlreadyAliveException, InvalidTopologyException, NotAliveException {
+        if (topologyName != null && topologyName.length() > 0 && conf != null && builder != null) {
+            LocalCluster cluster = new LocalCluster();
+            cluster.submitTopology(topologyName, conf, builder.createTopology());
+            Utils.sleep(10000);
+            cluster.killTopology(topologyName);
+            cluster.shutdown();
+        }
+    }
 }
