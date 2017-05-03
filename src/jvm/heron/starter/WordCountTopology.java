@@ -19,11 +19,17 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
+import heron.starter.util.StormRunner;
+
 
 /**
  * This topology demonstrates Storm's stream groupings and multilang capabilities.
  */
 public class WordCountTopology {
+  private static final String MODE_OF_OPERATION_CLUSTER = "Cluster";
+  private static final String MODE_OF_OPERATION_LOCAL = "Local";
+  private static final int NUMBER_OF_WORKERS = 3;  //default value
+  private static final int DEFAULT_RUNTIME_IN_SECONDS = 60;
 
   private WordCountTopology() { }
 
@@ -33,6 +39,7 @@ public class WordCountTopology {
   static class WordSpout extends BaseRichSpout {
     private Random rnd;
     private SpoutOutputCollector collector;
+
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
       outputFieldsDeclarer.declare(new Fields("word"));
@@ -48,9 +55,15 @@ public class WordCountTopology {
     @Override
     public void nextTuple() {
       String[] list = {"Jack", "Mary", "Jill", "McDonald"};
-      Utils.sleep(10);
-      int nextInt = rnd.nextInt(list.length);
-      collector.emit(new Values(list[nextInt]));
+
+      try {
+          Utils.sleep(10);
+          int nextInt = rnd.nextInt(list.length);
+          collector.emit(new Values(list[nextInt]));
+      } catch(RuntimeException runtimeEx) {
+          //Swallow the exception and do a no-op
+          return;
+      }
     }
   }
 
@@ -95,30 +108,37 @@ public class WordCountTopology {
     }
   }
 
-  public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
+        if (args != null) {
+            if (args.length < 2) {
+                Exception exception = new IllegalArgumentException("Illegal number of command line arguments supplied.\nPlease provide the topologyName as the first argument and either 'Cluster' or 'Local' as the second argument.");
+                throw exception;
+            }
 
-    TopologyBuilder builder = new TopologyBuilder();
+            if (!args[1].equals(MODE_OF_OPERATION_CLUSTER) && !args[1].equals(MODE_OF_OPERATION_LOCAL)) {
+                Exception exception = new IllegalArgumentException("The allowed values for the second argument is either 'Cluster' or 'Local'.  Please provide a valid value for the second argument.");
+                throw exception;
+            }
 
-    builder.setSpout("word", new WordSpout(), 2);
-    builder.setBolt("count", new ConsumerBolt(), 3).fieldsGrouping("word", new Fields("word"));
 
-    Config conf = new Config();
-    conf.setDebug(true);
+            String topologyName = args[0];
 
-    if (args != null && args.length > 0) {
-      conf.setNumWorkers(3);
 
-      StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+            TopologyBuilder builder = new TopologyBuilder();
+
+            builder.setSpout("word", new WordSpout(), 2);
+            builder.setBolt("count", new ConsumerBolt(), 3).fieldsGrouping("word", new Fields("word"));
+
+            Config conf = new Config();
+            conf.setDebug(true);
+            conf.setNumWorkers(NUMBER_OF_WORKERS);
+
+            if (args[1].equals(MODE_OF_OPERATION_CLUSTER)) {
+                StormRunner.runTopologyRemotely(builder.createTopology(), topologyName, conf);
+            } else {
+                conf.setMaxTaskParallelism(3);
+                StormRunner.runTopologyLocally(builder.createTopology(), topologyName, conf, DEFAULT_RUNTIME_IN_SECONDS);
+            }
+        } 
     }
-    else {
-      conf.setMaxTaskParallelism(3);
-
-      LocalCluster cluster = new LocalCluster();
-      cluster.submitTopology("word-count", conf, builder.createTopology());
-
-      Thread.sleep(10000);
-
-      cluster.shutdown();
-    }
-  }
 }
