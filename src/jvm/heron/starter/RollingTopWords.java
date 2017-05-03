@@ -22,10 +22,11 @@ import heron.starter.util.StormRunner;
  * like trending topics or trending images on Twitter.
  */
 public class RollingTopWords {
-
+  private static final String MODE_OF_OPERATION_CLUSTER = "Cluster";
+  private static final String MODE_OF_OPERATION_LOCAL = "Local";
   private static final int DEFAULT_RUNTIME_IN_SECONDS = 60;
-  private static final int TOP_N = 5;
   private static final int NUMBER_OF_STREAM_MANAGERS = 5;
+  private static final int TOP_N = 5;
 
   private final TopologyBuilder builder;
   private final String mode;
@@ -65,26 +66,26 @@ public class RollingTopWords {
   }
 
   public void run() throws InterruptedException, InvalidTopologyException, AlreadyAliveException, NotAliveException {
-    if (mode != null && mode.equals("Cluster")) {
+    if (mode != null && mode.equals(MODE_OF_OPERATION_CLUSTER)) {
         StormRunner.runTopologyRemotely(builder.createTopology(), topologyName, topologyConfig);
     } else {
         StormRunner.runTopologyLocally(builder.createTopology(), topologyName, topologyConfig, runtimeInSeconds);
     }
   }
 
-  public static void main(String[] args) throws Exception {
-    if (args != null) {
-        if (args.length != 2) {
-            Exception exception = new IllegalArgumentException("Illegal number of command line arguments supplied.\nPlease provide the topologyName as the first argument and either 'Cluster' or 'Local' as the second argument.");
-            throw exception;
-        }
+    public static void main(String[] args) throws Exception {
+        if (args != null) {
+            if (args.length < 2) {
+                Exception exception = new IllegalArgumentException("Illegal number of command line arguments supplied.\nPlease provide the topologyName as the first argument and either 'Cluster' or 'Local' as the second argument.");
+                throw exception;
+            }
 
-        if (args[1].equals("Cluster") || args[1].equals("Local")) {
+            if (!args[1].equals(MODE_OF_OPERATION_CLUSTER) && !args[1].equals(MODE_OF_OPERATION_LOCAL)) {
+                Exception exception = new IllegalArgumentException("The allowed values for the second argument is either 'Cluster' or 'Local'.  Please provide a valid value for the second argument.");
+                throw exception;
+            }
+
             new RollingTopWords(args[0], args[1]).run();
-        } else {
-            Exception exception = new IllegalArgumentException("The allowed values for the second argument is either 'Cluster' or 'Local'.  Please provide a valid value for the second argument.");
-            throw exception;
         }
     }
-  }
 }
