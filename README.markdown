@@ -39,17 +39,17 @@ Finally, make sure you have the heron-starter code available on your machine.  G
 
 ## Twitter Credentials
 
-    Go to Twitter developer site and log in. Create a new account if you do not have one.
+* Go to Twitter developer site and log in. Create a new account if you do not have one.
 
-    Click on the arrow on top right beside your account image and select "My applications".
+* Click on the arrow on top right beside your account image and select "My applications".
 
-    Create a new application. If you already have one, you can use credentials from that application and skip this and the next step.
+* Create a new application. If you already have one, you can use credentials from that application and skip this and the next step.
 
-    Fill in the details. You can use dummy values for all required fields.
+* Fill in the details. You can use dummy values for all required fields.
 
-    In the application detail page note the Consumer key and Consumer secret fields under OAuth settings
+* In the application detail page note the Consumer key and Consumer secret fields under OAuth settings
 
-    Create a new access token at the bottom of the page. The Access token and Access token secret will be shown after a moment.
+* Create a new access token at the bottom of the page. The Access token and Access token secret will be shown after a moment.
 
 ## Overview
 
