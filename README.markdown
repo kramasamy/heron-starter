@@ -27,9 +27,7 @@ create one. From your Twitter account, you can follow the Heron experts:
     @karthikz, @louis_fumaosong, @billgraham
 
 Third, if you need to use Twitter firehose/Tweet stream for your idea, 
-create a set of credentials by following the instructions
-
-    https://dev.twitter.com/discussions/631
+create a set of credentials by following the instructions in [section](#twitter-credentials)
 
 Fourth (optional), partner with someone to form a group. We encourage 2/3 students per group. 
 
