@@ -27,7 +27,7 @@ create one. From your Twitter account, you can follow the Heron experts:
     @karthikz, @louis_fumaosong, @billgraham
 
 Third, if you need to use Twitter firehose/Tweet stream for your idea, 
-create a set of credentials by following the instructions at 
+create a set of credentials by following the instructions
 
     https://dev.twitter.com/discussions/631
 
@@ -37,6 +37,19 @@ Finally, make sure you have the heron-starter code available on your machine.  G
 
     $ git clone https://github.com/kramasamy/heron-starter.git && cd heron-starter
 
+## Twitter Credentials
+
+Go to Twitter developer site and log in. Create a new account if you do not have one.
+
+Click on the arrow on top right beside your account image and select "My applications".
+
+Create a new application. If you already have one, you can use credentials from that application and skip this and the next step.
+
+Fill in the details. You can use dummy values for all required fields.
+
+In the application detail page note the Consumer key and Consumer secret fields under OAuth settings
+
+Create a new access token at the bottom of the page. The Access token and Access token secret will be shown after a moment.
 
 ## Overview
 
