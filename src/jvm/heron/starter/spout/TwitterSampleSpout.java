@@ -22,35 +22,47 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterSampleSpout extends BaseRichSpout 
 {
     SpoutOutputCollector _collector;
-    LinkedBlockingQueue<Status> queue = null;
+    LinkedBlockingQueue _msgs = null;
     TwitterStream _twitterStream;
-    String _custkey;
-    String _custsecret;
-    String _accesstoken;
-    String _accesssecret;
+
+    String _consumerKey;
+    String _consumerSecret;
+    String _accessToken;
+    String _accessTokenSecret;
     
-    public TwitterSampleSpout(String key, String secret) {
-        _custkey = key;
-        _custsecret = secret;
+    public TwitterSampleSpout(String consumerKey, String consumerSecret) {
+        if (consumerKey == null ||
+            consumerSecret == null) {
+            throw new RuntimeException("Twitter4j OAuth fields cannot be null");
+        }
+
+        _consumerKey = consumerKey;
+        _consumerSecret = consumerSecret;
     }
 
-    public TwitterSampleSpout(String key, String secret, String token, String tokensecret) {
-        _custkey = key;
-        _custsecret = secret;
-        _accesstoken = token;
-        _accesssecret = tokensecret;
+    public TwitterSampleSpout(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
+        if (consumerKey == null ||
+            consumerSecret == null ||
+            accessToken == null ||
+            accessTokenSecret == null) {
+            throw new RuntimeException("Twitter4j OAuth fields cannot be null");
+        }
+
+        _consumerKey = consumerKey;
+        _consumerSecret = consumerSecret;
+        _accessToken = accessToken;
+        _accessTokenSecret = accessTokenSecret;
     }
     
     @Override
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
-        queue = new LinkedBlockingQueue<Status>(1000);
+        _msgs = new LinkedBlockingQueue();
         _collector = collector;
 
         StatusListener listener = new StatusListener() {
-
             @Override
             public void onStatus(Status status) {
-                queue.offer(status);
+                _msgs.offer(status.getText());
             }
 
             @Override
@@ -77,10 +89,10 @@ public class TwitterSampleSpout extends BaseRichSpout
 
         ConfigurationBuilder config = 
             new ConfigurationBuilder()
-                 .setOAuthConsumerKey(_custkey)
-                 .setOAuthConsumerSecret(_custsecret)
-                 .setOAuthAccessToken(_accesstoken)
-                 .setOAuthAccessTokenSecret(_accesssecret);
+                 .setOAuthConsumerKey(_consumerKey)
+                 .setOAuthConsumerSecret(_consumerSecret)
+                 .setOAuthAccessToken(_accessToken)
+                 .setOAuthAccessTokenSecret(_accessTokenSecret);
 
         TwitterStreamFactory fact = 
             new TwitterStreamFactory(config.build());
@@ -92,17 +104,19 @@ public class TwitterSampleSpout extends BaseRichSpout
 
     @Override
     public void nextTuple() {
-        Status ret = queue.poll();
-        if(ret==null) {
+        Object ret = _msgs.poll();
+        if (ret == null) {
             Utils.sleep(50);
         } else {
-            _collector.emit(new Values(ret.getText()));
+            System.out.println(" ret: " + ret);
+            _collector.emit(new Values(ret));
         }
     }
 
     @Override
     public void close() {
         _twitterStream.shutdown();
+        super.close();
     }
 
     @Override
