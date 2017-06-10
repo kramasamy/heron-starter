@@ -6,15 +6,19 @@ import backtype.storm.Config;
 import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.generated.NotAliveException;
-import backtype.storm.testing.TestWordSpout;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
+
+import com.twitter.heron.common.basics.ByteAmount;
+
 import heron.starter.bolt.IntermediateRankingsBolt;
 import heron.starter.bolt.RollingCountBolt;
 import heron.starter.bolt.TotalRankingsBolt;
 import heron.starter.tools.RankableObjectWithFields;
 import heron.starter.tools.Rankings;
 import heron.starter.util.StormRunner;
+import heron.starter.spout.WordSpout;
+
 
 /**
  * This topology does a continuous computation of the top N words that the topology has seen in terms of cardinality.
@@ -25,8 +29,13 @@ public class RollingTopWords {
   private static final String MODE_OF_OPERATION_CLUSTER = "Cluster";
   private static final String MODE_OF_OPERATION_LOCAL = "Local";
   private static final int DEFAULT_RUNTIME_IN_SECONDS = 60;
-  private static final int NUMBER_OF_STREAM_MANAGERS = 5;
+  private static final int NUMBER_OF_STREAM_MANAGERS = 50;
   private static final int TOP_N = 5;
+
+  private static final String spoutId = "wordGenerator";
+  private static final String counterId = "counter";
+  private static final String intermediateRankerId = "intermediateRanker";
+  private static final String totalRankerId = "finalRanker";
 
   private final TopologyBuilder builder;
   private final String mode;
@@ -48,6 +57,14 @@ public class RollingTopWords {
     Config conf = new Config();
     conf.setDebug(true);
     conf.setNumStmgrs(NUMBER_OF_STREAM_MANAGERS);
+    conf.setContainerCpuRequested(2.0f);
+    conf.setContainerDiskRequested(ByteAmount.fromGigabytes(3));
+
+    com.twitter.heron.api.Config.setComponentRam(conf, spoutId, ByteAmount.fromMegabytes(256));
+    com.twitter.heron.api.Config.setComponentRam(conf, counterId, ByteAmount.fromMegabytes(256));
+    com.twitter.heron.api.Config.setComponentRam(conf, intermediateRankerId, ByteAmount.fromMegabytes(256));
+    com.twitter.heron.api.Config.setComponentRam(conf, totalRankerId, ByteAmount.fromMegabytes(256));
+
     conf.registerSerialization(Rankings.class);
     conf.registerSerialization(RankableObjectWithFields.class);
     conf.registerSerialization(LinkedList.class);
@@ -55,13 +72,9 @@ public class RollingTopWords {
   }
 
   private void wireTopology() throws InterruptedException {
-    String spoutId = "wordGenerator";
-    String counterId = "counter";
-    String intermediateRankerId = "intermediateRanker";
-    String totalRankerId = "finalRanker";
-    builder.setSpout(spoutId, new TestWordSpout(), 5);
-    builder.setBolt(counterId, new RollingCountBolt(9, 3), 4).fieldsGrouping(spoutId, new Fields("word"));
-    builder.setBolt(intermediateRankerId, new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping(counterId, new Fields("obj"));
+    builder.setSpout(spoutId, new WordSpout(), NUMBER_OF_STREAM_MANAGERS);
+    builder.setBolt(counterId, new RollingCountBolt(9, 3), NUMBER_OF_STREAM_MANAGERS - 1).fieldsGrouping(spoutId, new Fields("word"));
+    builder.setBolt(intermediateRankerId, new IntermediateRankingsBolt(TOP_N), NUMBER_OF_STREAM_MANAGERS - 1).fieldsGrouping(counterId, new Fields("obj"));
     builder.setBolt(totalRankerId, new TotalRankingsBolt(TOP_N)).globalGrouping(intermediateRankerId);
   }
 
