@@ -29,7 +29,7 @@ public class RollingTopWords {
   private static final String MODE_OF_OPERATION_CLUSTER = "Cluster";
   private static final String MODE_OF_OPERATION_LOCAL = "Local";
   private static final int DEFAULT_RUNTIME_IN_SECONDS = 60;
-  private static final int NUMBER_OF_STREAM_MANAGERS = 50;
+  private static final int NUMBER_OF_STREAM_MANAGERS = 20;
   private static final int TOP_N = 5;
 
   private static final String spoutId = "wordGenerator";
