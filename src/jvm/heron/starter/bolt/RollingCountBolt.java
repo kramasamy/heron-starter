@@ -71,7 +71,7 @@ public class RollingCountBolt extends BaseRichBolt {
   @SuppressWarnings("rawtypes")
   @Override
   public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
-    counter = new SlidingWindowCounter<Object>(deriveNumWindowChunksFrom(this.windowLengthInSeconds,
+    counter = new SlidingWindowCounter<>(deriveNumWindowChunksFrom(this.windowLengthInSeconds,
         this.emitFrequencyInSeconds));
 
     this.collector = collector;

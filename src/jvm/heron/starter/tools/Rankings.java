@@ -51,7 +51,7 @@ public class Rankings implements Serializable {
   /**
    * The returned defensive copy is only "somewhat" defensive.  We do, for instance, return a defensive copy of the
    * enclosing List instance, and we do try to defensively copy any contained Rankable objects, too.  However, the
-   * contract of {@link storm.starter.tools.Rankable#copy()} does not guarantee that any Object's embedded within
+   * contract of {@link heron.starter.tools.Rankable#copy()} does not guarantee that any Object's embedded within
    * a Rankable will be defensively copied, too.
    *
    * @return a somewhat defensive copy of ranked items

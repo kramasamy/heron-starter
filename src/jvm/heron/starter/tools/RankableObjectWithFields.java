@@ -133,7 +133,7 @@ public class RankableObjectWithFields implements Rankable, Serializable {
    */
   @Override
   public Rankable copy() {
-    List<Object> shallowCopyOfFields = new LinkedList<Object>(getFields());
+    List<Object> shallowCopyOfFields = new LinkedList<>(getFields());
     return new RankableObjectWithFields(getObject(), getCount(), shallowCopyOfFields);
   }
 

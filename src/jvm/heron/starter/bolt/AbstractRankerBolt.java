@@ -85,7 +85,7 @@ public abstract class AbstractRankerBolt extends BaseBasicBolt {
 
   @Override
   public Map<String, Object> getComponentConfiguration() {
-    Map<String, Object> conf = new HashMap<String, Object>();
+    Map<String, Object> conf = new HashMap<>();
     conf.put(Config.TOPOLOGY_TICK_TUPLE_FREQ_SECS, emitFrequencyInSeconds);
     return conf;
   }
