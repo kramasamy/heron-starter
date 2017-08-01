@@ -36,9 +36,9 @@ public class RotatingMap<K, V> {
     if(numBuckets<2) {
       throw new IllegalArgumentException("numBuckets must be >= 2");
     }
-    _buckets = new LinkedList<HashMap<K, V>>();
+    _buckets = new LinkedList<>();
     for(int i=0; i<numBuckets; i++) {
-      _buckets.add(new HashMap<K, V>());
+      _buckets.add(new HashMap<>());
     }
 
     _callback = callback;
